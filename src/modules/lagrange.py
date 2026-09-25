@@ -26,20 +26,19 @@ def tabelaDePontos():
 
 
 
-def neville(X, Y, x_alvo):
+def lagrange(X, Y, x_alvo):
     n = len(X)
-    q = [[0.0] * n for _ in range(n)]
+    x_alvo = float(x_alvo)
+    resultado = 0.0
+
     for i in range(n):
-        q[i][0] = Y[i]
+        L = 1.0
+        for j in range(n):
+            if i != j:
+                L *= (x_alvo - float(X[j])) / (float(X[i]) - float(X[j]))
+        resultado += Y[i] * L
 
-
-    for i in range(1, n):
-        for j in range(i, n):
-           # q[i][j] = ((x_alvo - X[j - i]*q[j][i-1]) - (x_alvo - X[j]*q[j-1][i-1])/ (X[j]- X[j-i]))
-           # Fórmula de Neville corrigida matematicamente e com conversão forçada para float
-           q[i][j] = ((float(x_alvo) - float(X[j - i])) * q[j][i - 1] - (float(x_alvo) - float(X[j])) * q[j - 1][i - 1]) / (float(X[j]) - float(X[j - i]))
-
-    return q[n-1][n-1]
+    return resultado
 
 
 def interpolar_todas_combinacoes(X,Y, x_alvo) -> list[float]:
@@ -50,7 +49,7 @@ def interpolar_todas_combinacoes(X,Y, x_alvo) -> list[float]:
         for indices in combinations (range(n), tamanho):
             sub_X = [X[i] for i in indices]
             sub_Y = [Y[i] for i in indices]
-            resultados.append((indices, neville(sub_X, sub_Y, x_alvo)))
+            resultados.append((indices, lagrange(sub_X, sub_Y, x_alvo)))
 
     return resultados
 
